@@ -1,0 +1,80 @@
+<div class="container">
+	<div class="row" style="margin-top:10px;padding: 10px;border: 1px solid grey;border-radius: 6px;" *ngFor="let key of keys">
+		<div class="col-md-12">
+			<div class="row order-det">
+				<div class="col-md-3">
+					<label>Order Id:</label>
+					<span [textContent]="orderDetails[key][0].order_id"></span>
+				</div>
+				<div class="col-md-3">
+					<label>Bill Amt:</label>
+					<span [textContent]="orderDetails[key][0].bill_amt"></span>
+				</div>
+				<div class="col-md-3">
+					<label>Order Status:</label>
+					<span [textContent]="orderDetails[key][0].order_status"></span>
+				</div>
+				<div class="col-md-3" *ngIf="orderDetails[key][0].order_status=='New'">
+					<div style="float:right;">
+						<button class="btn btn-sm btn-warning" (click)="orderDetails[key][0].modifyOrder=false" >Modify Order</button>
+						<button type="button" class="btn btn-sm btn-primary" style="float:right;" data-toggle="modal" data-target="#myModal" (click)="cancelOrderId=orderDetails[key][0].order_id">Cancel Order</button>
+					</div>
+				</div>
+			</div>
+			<div class="row" >
+				<div class="col-md-12">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Item Name</th>
+								<th>Item Count</th>
+								<th>Cost  Per Item(Rs.)</th>
+							</tr>
+						</thead>
+						<tr *ngFor="let item of orderDetails[key];let index = index;">
+							<td>
+								<span [textContent]="item.item_name"></span>
+							</td>
+							<td>
+								<input class="form-control" type="number" name="orderDetails[key][0].order_id+'_'+item.item_id"
+								[value]="item.ord_cnt" [(ngModel)]="orderDetails[key][index].ord_cnt" [disabled]="orderDetails[key][0].modifyOrder" (change)="calculateNewBillAmt(orderDetails[key][0].order_id)"/>
+							</td>
+							<td>
+								<span [textContent]="item.price"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="row" *ngIf="!orderDetails[key][0].modifyOrder">
+				<div class="col-md-6">
+					<label>New Bill Amt:</label>
+					<span [textContent]="orderDetails[key][0].newBillAmt"></span>
+				</div>
+				<div class="col-md-6" *ngIf="orderDetails[key][0].newBillAmt>0 && orderDetails[key][0].newBillAmt!=orderDetails[key][0].bill_amt">
+					<button class="btn btn-sm btn-warning" (click)="modifyOrder(orderDetails[key]);" >Place Modified Order</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal" id="myModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<h4 class="modal-title">Confirm Cancellation</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<!-- Modal body -->
+				<div class="modal-body">
+					Are you sure to Cancel the order?
+				</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button class="btn btn-sm btn-danger" data-dismiss="modal" (click)="cancelOrder();">Cancel order</button>
+					<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
